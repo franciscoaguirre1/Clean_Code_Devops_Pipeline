@@ -5,3 +5,4 @@
 **/.terraform.lock.hcl
 *.tfvars
 .fake
+**/.DS_Store

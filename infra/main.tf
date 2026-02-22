@@ -67,3 +67,18 @@ resource "azurerm_linux_web_app" "app" {
     type = "SystemAssigned"
   }
 }
+
+
+# Create the Azure Container Registry
+resource "azurerm_container_registry" "acr" {
+  name                = "acrcleancodefrancisco456789"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Basic"
+  admin_enabled       = true
+}
+
+# Output the Login Server URL so we know where to push
+output "acr_login_server" {
+  value = azurerm_container_registry.acr.login_server
+}

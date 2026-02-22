@@ -1,0 +1,7 @@
+**/.terraform/
+**/.git/
+**/bin/
+**/obj/
+infra/
+.gitignore
+README.md
