@@ -7,5 +7,5 @@ variable "sql_admin_login" {
 }
 variable "sql_admin_password" { 
   type      = string
-  sensitive = true 
+  sensitive = true # This hides the password from terminal logs
 }

@@ -6,3 +6,4 @@
 *.tfvars
 .fake
 **/.DS_Store
+terraform.tfvars

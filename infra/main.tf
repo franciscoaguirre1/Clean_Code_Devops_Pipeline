@@ -39,7 +39,15 @@ resource "azurerm_mssql_database" "db" {
   auto_pause_delay_in_minutes = 60
 }
 
-# 5. App Service Plan (Using B1 to bypass F1 Quota restrictions)
+# 5. Allow Azure services (like our App Service) to connect
+resource "azurerm_mssql_firewall_rule" "allow_azure" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+# 6. App Service Plan (Using B1 to bypass F1 Quota restrictions)
 resource "azurerm_service_plan" "asp" {
   name                = "asp-${var.project_name}"
   location            = azurerm_resource_group.rg.location
@@ -50,7 +58,7 @@ resource "azurerm_service_plan" "asp" {
   sku_name            = "B1" # This uses your $200 credits!
 }
 
-# 6. Linux Web App (Updated to match Linux Plan)
+# 7. Linux Web App (Updated to match Linux Plan)
 resource "azurerm_linux_web_app" "app" {
   name                = "app-${var.project_name}-${var.environment}"
   location            = azurerm_resource_group.rg.location
@@ -82,3 +90,4 @@ resource "azurerm_container_registry" "acr" {
 output "acr_login_server" {
   value = azurerm_container_registry.acr.login_server
 }
+

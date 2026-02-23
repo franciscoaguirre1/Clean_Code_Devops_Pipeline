@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// 1. Obtener la cadena de conexión de Azure
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// 2. Registrar el DbContext para usar SQL Server
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,3 +55,11 @@ app.Run();
 
 // 3. ALL records/classes MUST go at the very bottom!
 public record Product(int Id, string Name, string Category, decimal Price, int Stock);
+
+
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Product> Products => Set<Product>();
+}
