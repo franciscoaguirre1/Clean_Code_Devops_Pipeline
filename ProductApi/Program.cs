@@ -51,6 +51,21 @@ app.MapGet("/api/products", (string? category, decimal? maxPrice, bool? inStock)
 .WithName("GetProducts")
 .WithOpenApi();
 
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (!db.Products.Any())
+    {
+        db.Products.AddRange(
+            new Product(0, "Cloud Architecture Book", "Books", 55.00m, 20),
+            new Product(0, "Mechanical Keyboard", "Electronics", 120.00m, 5),
+            new Product(0, "Ergonomic Mouse", "Electronics", 45.00m, 10)
+        );
+        db.SaveChanges();
+    }
+}
+
 app.Run();
 
 // 3. ALL records/classes MUST go at the very bottom!
@@ -62,4 +77,11 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Product> Products => Set<Product>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasColumnType("decimal(18,2)");
+    }
 }
